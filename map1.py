@@ -1,12 +1,12 @@
 import folium
 import pandas
-
+#initial loading of geocode data and first creation of main variables.
 data = pandas.read_csv("stadiums-geocoded.txt")
 lat = list(data["latitude"])
 lon = list(data["longitude"])
 cap = list(data["capacity"])
 name = list(data["stadium"])
-
+#functions to set color ok marker based on capacity
 def markerColorChangeBlue():
     if cap < 20000:
         return 'blue'
@@ -27,13 +27,18 @@ def markerColorChangeBlack():
     if cap4 > 100000:
         return 'black'
 
+#adding hyperlinks to stadium name for more info
+
 html = """
 Stadium Name:<br>
 <a href="https://www.google.com/search?q=%%22%s%%22" target="_blank">%s</a><br>
 Capacity: %s
 """
+#initializing the map background and staarting location
 
 map = folium.Map(location=[33.18, -86.82], zoom_start=5, titles="Staemen Terrain")
+
+# each fg after this point controls one layer of the control system, changing the color of the marker and adding the filter system
 
 fg1 = folium.FeatureGroup(name="NCAA Football stadium less than 20,000 capacity")
 
@@ -84,6 +89,8 @@ name4 = list(data["stadium"])
 for lat4, lon4, cap4, name4 in zip(lat4, lon4, cap4, name4):
     iframe = folium.IFrame(html=html % (name4, name4, cap4),  width=200, height=100)
     fg5.add_child(folium.CircleMarker(location=[lat4, lon4], radius=8, popup=folium.Popup(iframe), fill_color=markerColorChangeBlack(), color="transparent", fill_opacity=1.0))
+
+# adding the fg to the map and the layer control system
 
 map.add_child(fg1)
 map.add_child(fg2)
